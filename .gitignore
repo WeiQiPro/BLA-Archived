@@ -1,0 +1,4 @@
+node_modules/
+gtp_logs/
+kommentary/query_logs/
+kommentary/src/katago/
