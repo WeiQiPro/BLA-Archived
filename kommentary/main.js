@@ -1,31 +1,7 @@
 import KataGo from './src/katago.js'
 import Kifu from './src/goban/kifu.js'
 import Board from './src/goban/board.js'
-import fs, { write } from 'fs'
-
-const queryLogWriter = function (response) {
-    const queryLog = 'query_logs/querylogs.json';
-
-    fs.access(queryLog, fs.constants.F_OK, (findError) => {
-        if (findError) {
-            fs.writeFile(queryLog, JSON.stringify(response), (writeError) => {
-                if (writeError) {
-                    console.error('Error writing to file:', writeError);
-                    return;
-                }
-                console.log('Query was written to queryLog');
-            });
-        } else {
-            fs.writeFile(queryLog, JSON.stringify(response), (writeError) => {
-                if (writeError) {
-                    console.error('Error writing to file:', writeError);
-                    return;
-                }
-                console.log('Query was written to queryLog');
-            });
-        }
-    });
-};
+import { queryLogWriter } from './src/utils.js'
 
 const path = {
     katago: 'src/katago/katago.exe',
