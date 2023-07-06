@@ -16,10 +16,11 @@ export default class KataGo {
 
   moveToString(move) {
     const [x, y] = move;
-    const col = String.fromCharCode(97 + x); // Convert 0-based column index to letter ('a' to 's')
+    const col = String.fromCharCode(97 + x + (x >= 8 ? 1 : 0)); // Add +1 for x >= 8 to skip 'i'
     const row = y + 1; // Add 1 to row index to convert to number
     return col + row;
-  }  
+  }
+
 
   startErrorThread() {
     this.stderrThread = setInterval(() => {
@@ -38,19 +39,18 @@ export default class KataGo {
 
   query(initialBoard, moves, komi, maxVisits = null) {
     const query = {};
-  
+
     query.id = String(this.queryCounter);
     this.queryCounter += 1;
-  
+
     query.moves = moves.map(([color, move]) => [color, this.moveToString(move)]);
     query.rules = 'Chinese';
     query.komi = komi;
-    query.boardXSize = initialBoard.size;
-    query.boardYSize = initialBoard.size;
+    query.boardXSize = initialBoard.length;
+    query.boardYSize = initialBoard.length;
     query.includePolicy = true;
     // query.kata_analysis = true;
     query.includeOwnership = true;
-    query.includeOwnershipStdev = true;
     if (maxVisits !== null) {
       query.maxVisits = maxVisits;
     }

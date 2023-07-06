@@ -23,3 +23,50 @@ export const queryLogWriter = function (response) {
         }
     });
 };
+
+export const KataGoQueryMap = function (queryLog) {
+
+    const setToGrid = (ownership) => {
+        const size = 19;
+        const board = [];
+
+        for (let i = 0; i < size; i++) {
+            const row = [];
+            for (let j = 0; j < size; j++) {
+                const index = i * size + j;
+                row.push(ownership[index]);
+            }
+            board.push(row);
+        }
+
+        return board;
+    }
+
+    const movesByInfo = (queryMoves) => {
+        return queryMoves.map((queryMove) => {
+            return [
+                queryMove["move"],
+                queryMove["lcb"],
+                queryMove["prior"],
+                queryMove["pv"]
+            ];
+        });
+    };
+
+    const queryMap = {
+        root: {
+            scoreLead: queryLog["rootInfo"]["scoreLead"],
+            winrate: queryLog["rootInfo"]["winrate"]
+        },
+        moves: movesByInfo(queryLog["moveInfos"]),
+        ownerShipMap: setToGrid(queryLog["ownership"])
+    };
+
+    for (const move of queryMap.moves) {
+        console.log(move[0]);
+        console.log(move[1]);
+    }
+      
+
+    return queryMap;
+};
