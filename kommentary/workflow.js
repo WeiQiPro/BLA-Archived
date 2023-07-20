@@ -40,7 +40,11 @@ export const CreateGame = () => {
       previous: [],
       history: []
     },
-    moves: [],
+    moves: {
+      list: [],
+      current: "",
+      previous: ""
+    },
     players: {
       black: {
         id: "black player",
@@ -82,7 +86,7 @@ export const Query = (GameInput, maxVisits = null) => {
   query.id = String(game.info.id + game.queries);
   game.queries += 1;
 
-  query.moves = game.moves.map(([color, move]) => [color, moveToString(move)]);
+  query.moves = game.moves.list.map(([color, move]) => [color, moveToString(move)]);
   query.rules = game.info.rules;
   query.komi = game.info.komi;
   query.boardXSize = game.info.size;
