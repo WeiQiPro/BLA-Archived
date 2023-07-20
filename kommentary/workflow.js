@@ -9,7 +9,6 @@ export const States = {
   LOAD: 0
 }
 export const State = {value: States.LOAD}
-export const GuiConfig = {value: 0}
 export const Letters = 'ABCDEFGHJKLMNOPQRST';
 export const Numbers = Array.from({ length: 19 }, (_, i) => i + 1);
 export const Coordinates = { letters: Letters, numbers: Numbers };
