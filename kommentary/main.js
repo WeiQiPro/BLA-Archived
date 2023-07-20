@@ -1,56 +1,62 @@
-import { resolve } from 'path'
-import KataGo from './src/katago.js'
-import { KataGoQueryMap, queryLogWriter } from './src/utils.js'
+import { States, Letters, Numbers, Coordinates, PathToKatago, Games, CashedGames, kataGo, NewBoard, CreateGame, moveToString, newBoardState, Vector, Move, Query, State} from './workflow.js';
+import { CheckGuiConfig, SetGuiConfigVariable, GuiConfig, queryLogWriter, KataGoQueryMap } from './utility.js';
+const StateManagementSystem = (state) => {
+    switch (state) {
+        case States.LOAD:
+            if(GuiConfig.value == 0){
+            CheckGuiConfig();
+            SetGuiConfigVariable();
+            } else {
+                Games.push(CreateGame())
+                State.value = States.GAMES
+            }
+            break;
 
-const board = (size) => {
-    let grid = []
-    for (let i = 0; i < size; i++) {
-        grid[i] = new Array(size).fill(null)
+        case States.IDLE:
+            if(Games.length != 0){
+                State.value = States.GAMES
+            }
+
+            break;
+
+        case States.GAMES:
+            if(Games.length === 0){
+                State.value = States.IDLE
+            }
+            return GamesInProgress()
+
+        case States.CLOSE:
+            break;
+
+        default:
+            State.value = States.IDLE
     }
-
-    return grid
 }
 
-const main = async function () {
-
-    const path = {
-        katago: 'src/katago/katago.exe',
-        config: 'src/katago/default_gtp.cfg',
-        model: 'src/katago/default_model.bin.gz'
+const GamesInProgress = () => {
+    while (Games.length != 0) {
+        for(const game in Games) {
+            console.log(`found a game... ${Games[game]}`)
+            Games.splice(0, Games.length)
+        }
+        
+        //for game in Games eventlisteners or websocket update
+        //check current board state with previous board state
+        //add moves to the game in the Games array
+        //send query to katago to update evaluation
+        //evaluation should hold history of query searches for 
+        if (Games.length === 0) {
+            State.value = States.IDLE;
+            break; // Exit the loop when no games are in the array
+          }
     }
-    const katago = new KataGo(path.katago, path.config, path.model);
-
-    let kataGoQueryMap
-
-    const update = async (initialBoard, moves, komi) => {
-        return new Promise((resolve, reject) => {
-            katago.query(initialBoard, moves, komi)
-                .then((response) => {
-                    kataGoQueryMap = KataGoQueryMap(response);
-                    queryLogWriter(kataGoQueryMap);
-                    resolve(); // Resolve the promise to indicate completion
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    reject(error); // Reject the promise in case of an error
-                });
-        });
-    }
-
-    let initialBoard = board(19); // Create a 19x19 board
-    let komi = 7.5;
-    let moves = [['b', [3, 3]]];
-    initialBoard[3][3] = 'b'
-
-    // await update(initialBoard, moves, komi); // Wait for the update to finish
-    moves.push(['w',[15,15]]);
-    // await update(initialBoard, moves, komi); // Wait for the update to finish
-    moves.push(['b',[3,15]]);
-    // await update(initialBoard, moves, komi); // Wait for the update to finish
-    moves.push(['w', [15, 3]])
-    await update(initialBoard, moves, komi); // Wait for the update to finish
-
-    katago.close()
-
 }
+
+const main = function () {
+    while (State.value != States.CLOSE) {
+        StateManagementSystem(State.value);
+    }
+};
+
 main();
+

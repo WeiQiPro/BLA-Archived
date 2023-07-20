@@ -2,7 +2,6 @@ import { spawn } from 'child_process';
 
 export default class KataGo {
   constructor(katagoPath, configPath, modelPath) {
-    this.queryCounter = 0;
     this.katago = spawn(katagoPath, [
       'analysis',
       '-config',
@@ -13,14 +12,6 @@ export default class KataGo {
     this.stderrThread = null;
     this.startErrorThread();
   }
-
-  moveToString(move) {
-    const [x, y] = move;
-    const col = String.fromCharCode(97 + x + (x >= 8 ? 1 : 0)); // Add +1 for x >= 8 to skip 'i'
-    const row = y + 1; // Add 1 to row index to convert to number
-    return col + row;
-  }
-
 
   startErrorThread() {
     this.stderrThread = setInterval(() => {
@@ -35,37 +26,5 @@ export default class KataGo {
     this.katago.stdin.end();
     clearInterval(this.stderrThread);
     console.log('Closing KataGo Engine')
-  }
-
-  query(initialBoard, moves, komi, maxVisits = null) {
-    const query = {};
-
-    query.id = String(this.queryCounter);
-    this.queryCounter += 1;
-
-    query.moves = moves.map(([color, move]) => [color, this.moveToString(move)]);
-    query.rules = 'Chinese';
-    query.komi = komi;
-    query.boardXSize = initialBoard.length;
-    query.boardYSize = initialBoard.length;
-    query.includePolicy = true;
-    // query.kata_analysis = true;
-    query.includeOwnership = true;
-    if (maxVisits !== null) {
-      query.maxVisits = maxVisits;
-    }
-    console.log(JSON.stringify(query))
-    this.katago.stdin.write(JSON.stringify(query) + '\n');
-
-    return new Promise((resolve, reject) => {
-      this.katago.stdout.once('data', (data) => {
-        const response = JSON.parse(data.toString().trim());
-        resolve(response);
-      });
-
-      this.katago.once('error', (error) => {
-        reject(error);
-      });
-    });
   }
 }

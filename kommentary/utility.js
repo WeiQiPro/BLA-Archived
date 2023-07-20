@@ -1,3 +1,12 @@
+export const GuiConfig = {value: 0}
+
+export const CheckGuiConfig = () => {
+}
+
+export const SetGuiConfigVariable = () => {
+    GuiConfig.value = 1
+}
+
 import fs from 'fs'
 
 export const queryLogWriter = function (response) {
