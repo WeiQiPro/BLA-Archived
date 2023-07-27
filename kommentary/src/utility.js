@@ -1,3 +1,5 @@
+import fs from 'fs'
+
 export const GuiConfig = {value: 0}
 
 export const CheckGuiConfig = () => {
@@ -6,8 +8,6 @@ export const CheckGuiConfig = () => {
 export const SetGuiConfigVariable = () => {
     GuiConfig.value = 1
 }
-
-import fs from 'fs'
 
 export const queryLogWriter = function (response) {
     const queryLog = 'query_logs/querylogs.json';
