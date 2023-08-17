@@ -1,11 +1,11 @@
 body {
     background-color: rgb(26, 26, 26);
-    color: white;
-    /* Sets the color of the text to white */
+    color: rgb(233, 229, 229);
+    font-family: 'Public Sans', sans-serif;
 }
 
 .gobanCanvas {
-    border: 1px solid white;
+    border: 1px solid rgb(211, 209, 209);
     /* You can adjust other styling properties here */
 }
 
@@ -60,12 +60,16 @@ button.deleteLink {
 }
 
 .whiteWinRate {
+    text-align: center;
     background-color: white;
-    /* Color for white's win rate */
+    /* Color for black's win rate */
 }
 
 .blackWinRate {
+    text-align: center;
     background-color: black;
+    position: relative; /* Positions the text relative to its normal position */
+    top: 5px; /* Moves the text down by 5 pixels */
     /* Color for black's win rate */
 }
 
